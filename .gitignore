@@ -1,0 +1,11 @@
+.venv
+# Ignorar dependencias
+node_modules/
+
+# Ignorar variables de entorno y claves
+.env
+.env.local
+
+# Ignorar archivos del sistema operativo
+.DS_Store
+Thumbs.db

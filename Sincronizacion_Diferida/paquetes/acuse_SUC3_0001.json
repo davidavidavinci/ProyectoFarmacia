@@ -1,0 +1,8 @@
+{
+    "id_paquete": "SUC3-0001",
+    "origen": "CENTRAL",
+    "destino": "SUC3",
+    "estado": "APLICADO",
+    "secuencia": 1,
+    "mensaje": "Paquete recibido anteriormente"
+}
