@@ -27,7 +27,6 @@ Sincronizar SUC1 y SUC2 con CENTRAL. Los productos/precios bajan; los clientes, 
 9. Repetir el paso 8 para demostrar idempotencia: no deben aumentar los conteos de facturas y detalles en CENTRAL.
 10. Ejecutar `05_automatizacion_SUC1_SUC2.sql` en ambas sucursales. El JOB se crea **deshabilitado**. Activarlo solo después de probar manualmente.
 
-**Cómo ejecutar código en SQL Developer**: abrir una hoja SQL conectada a la instancia correcta, pegar el bloque y usar `Run Script (F5)` para procesar las barras `/`.
 
 ## Evidencias mínimas para el documento
 - Capturas de SELECT de productos, clientes, facturas y detalle_factura ANTES en ambos nodos, y DESPUÉS en CENTRAL.
@@ -36,13 +35,3 @@ Sincronizar SUC1 y SUC2 con CENTRAL. Los productos/precios bajan; los clientes, 
 - Captura de cliente con misma cédula e IDs distintos en ambas sucursales: una fila en CENTRAL, facturas vinculadas correctamente.
 - Captura de fallo de enlace: la sucursal sigue registrando facturas sin conexión, queda `sincronizado=0`, y al restablecer el enlace suben.
 - Captura del estado y próxima ejecución de `USER_SCHEDULER_JOBS`.
-
-## Entrega para Persona 3
-La estructura común incluye `detalle_factura.nodo_origen` e `id_detalle_origen`, más los campos `sincronizado` de `clientes` y `facturas`. El procedimiento `pkg_recepcion` en CENTRAL permite aplicar datos de SUC3 llamándolo **localmente desde CENTRAL** (sin DB link), una vez leído y verificado el paquete por correo. El paquete diferido deberá registrar secuencia, hash, acuse de recibo y evitar duplicaciones del paquete: esto NO está implementado aquí y es responsabilidad de Persona 3. Los productos y los clientes también deben regresar a SUC3 por paquete diferido.
-
-## Limitaciones / acuerdos pendientes con Persona 1
-- El diseño permite sincronizar facturas nuevas, pero no modifica facturas ya consolidadas ni detecta cambios posteriores en su detalle. Se deben tratar las ventas cerradas como inmutables, o añadir versionado/bitácora de cambios.
-- Los números de factura únicos dependen de que Persona 1 implemente realmente la asignación de rangos y sus respaldos; la tabla de control sola no los garantiza.
-- No se ha implementado resolución automática de modificaciones conflictivas en clientes con una misma cédula. Para la demostración, CENTRAL conserva el primer perfil consolidado y no lo sobrescribe con uno posterior. Esto debe declararse como política y limitación.
-- Esta entrega contiene SQL escrito y revisado estáticamente; no se ha ejecutado contra las cuatro instancias Oracle del equipo. Es indispensable realizar el ensayo sobre los nodos reales, revisar permisos, enlaces y posibles diferencias de versión.
-- Al existir transacciones distribuidas, Oracle coordina commit de operaciones locales/remotas; interrupciones en el commit pueden requerir revisión de transacciones pendientes.

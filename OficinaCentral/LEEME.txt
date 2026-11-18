@@ -1,0 +1,28 @@
+INTEGRACION PERSONA 3 - CENTRAL LOCAL (SIN DOCKER)
+
+1. En la computadora CENTRAL, verifica que SQL Developer conectado a FARMACIA_CENTRAL
+   muestre las ocho tablas y PKG_RECEPCION en estado VALID.
+2. Ejecuta 01_control_diferido.sql UNA SOLA VEZ en FARMACIA_CENTRAL (XEPDB1).
+3. Instala Python y ejecuta: py -m pip install oracledb
+4. Traslada por correo electronico el archivo paquete_SUC3_0001.json
+   producido por generar_paquete_oracle.py de SUC3 a esta computadora.
+5. Abre PowerShell en esta carpeta. Ejemplo:
+   py .\02_importar_central_oracle.py "C:\ruta\paquete_SUC3_0001.json"
+6. Introduce la contrasena de FARMACIA_CENTRAL localmente cuando se solicite.
+7. Verifica en CENTRAL con:
+   SELECT * FROM clientes;
+   SELECT * FROM facturas;
+   SELECT * FROM detalle_factura;
+   SELECT * FROM paquetes_recibidos;
+8. Repite la importacion para comprobar idempotencia. No se deben duplicar datos.
+9. Envia el archivo acuse_SUC3-0001.json de vuelta a SUC3.
+
+IMPORTANTE:
+- Este acuse incorpora sha256_paquete y aun NO esta autenticado. No marcar datos
+  en Oracle SUC3 hasta agregar verificacion de autenticidad y adaptacion del acuse.
+- Estos scripts son un prototipo verificable, no implementan todavia la exportacion
+  CENTRAL -> SUC3 ni la gestion persistente de paquetes salientes en SUC3.
+- El esquema debe ser identico en los cuatro nodos; coordina agregar las tablas
+  nuevas al DDL de Persona 1.
+- SHA-256 detecta cambios, pero no identifica al remitente (anadir HMAC o firma).
+- Para las pruebas del modo diferido, cada Python se conecta SOLO a su Oracle local.
