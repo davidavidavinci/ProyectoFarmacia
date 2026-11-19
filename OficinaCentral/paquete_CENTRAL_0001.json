@@ -1,0 +1,46 @@
+{
+    "contenido": {
+        "id_paquete": "CENTRAL-0001",
+        "origen": "CENTRAL",
+        "destino": "SUC3",
+        "secuencia": 1,
+        "fecha_generacion": "2026-11-19T01:33:17.564678",
+        "productos": [
+            {
+                "id_producto": 1,
+                "codigo_barra": "7441001230101",
+                "nombre_medicamento": "Acetaminofen 500mg",
+                "precio_unitario": "2500.00"
+            },
+            {
+                "id_producto": 2,
+                "codigo_barra": "7441001230102",
+                "nombre_medicamento": "Ibuprofeno 400mg",
+                "precio_unitario": "3200.00"
+            },
+            {
+                "id_producto": 3,
+                "codigo_barra": "7441001230103",
+                "nombre_medicamento": "Amoxicilina 500mg",
+                "precio_unitario": "6500.00"
+            },
+            {
+                "id_producto": 4,
+                "codigo_barra": "7441001230104",
+                "nombre_medicamento": "Loratadina 10mg",
+                "precio_unitario": "1800.00"
+            }
+        ],
+        "clientes": [
+            {
+                "id_cliente": "1001-SUC3",
+                "cedula": "307890123",
+                "nombre": "Ana Lucia Solano",
+                "telefono": "8700-9988",
+                "nodo_origen": "SUC3"
+            }
+        ]
+    },
+    "sha256": "0b9bf5c1a05b52900d19f76b50e68be8aefa249eed528f90f8bc63dba177d4b6",
+    "firma_hmac": "6d62a070e336c936a4d5f0927d0a9c0f41ba0d7fe0ad53d1974037d3b2c16529"
+}
