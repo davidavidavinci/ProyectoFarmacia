@@ -1,0 +1,12 @@
+{
+    "acuse": {
+        "id_paquete": "SUC3-0001",
+        "origen": "CENTRAL",
+        "destino": "SUC3",
+        "secuencia": 1,
+        "estado": "APLICADO",
+        "hash_paquete": "bc90648538ab417b63b6ab2e1b6447fed05450412921617bed70948475b390b0",
+        "fecha_acuse": "2026-11-19T01:10:44.141524"
+    },
+    "firma_hmac": "7a36c46c20fba7c99036f72f97831741e42909dab3b1fdd8617b6733a35152aa"
+}
