@@ -78,9 +78,7 @@ def generar_acuse():
         raise ValueError("No se genero el acuse sin confirmacion.")
 
     clave = getpass("Clave compartida para firmar el acuse: ")
-    if len(clave) < 16:
-        raise ValueError("La clave debe tener al menos 16 caracteres.")
-
+    
     acuse = {
         "id_paquete": identificador,
         "origen": "CENTRAL",
