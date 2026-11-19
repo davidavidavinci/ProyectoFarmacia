@@ -1,4 +1,6 @@
 
+from control_secuencias import guardar_paquete
+
 import csv
 import json
 import hashlib
@@ -135,50 +137,27 @@ def generar_paquete():
             "El catalogo no contiene productos."
         )
 
-    contenido = {
-        "id_paquete": "CENTRAL-0001",
-        "origen": "CENTRAL",
-        "destino": "SUC3",
-        "secuencia": 1,
-        "fecha_generacion": datetime.now().isoformat(),
-        "productos": productos,
-        "clientes": clientes
-    }
+    
+    def construir_contenido(secuencia):
+        return {
+            "id_paquete": f"CENTRAL-{secuencia:04d}",
+            "origen": "CENTRAL",
+            "destino": "SUC3",
+            "secuencia": secuencia,
+            "fecha_generacion": datetime.now().isoformat(),
+            "productos": productos,
+            "clientes": clientes
+        }
 
-    datos = convertir_bytes(contenido)
-    hash_paquete = hashlib.sha256(datos).hexdigest()
+    clave = getpass("Clave compartida CENTRAL-SUC3: ")
 
-    clave = getpass(
-        "Clave compartida CENTRAL-SUC3: "
+    guardar_paquete(
+        origen="CENTRAL",
+        carpeta=carpeta,
+        construir_contenido=construir_contenido,
+        clave=clave
     )
 
-    firma = hmac.new(
-        clave.encode("utf-8"),
-        datos,
-        hashlib.sha256
-    ).hexdigest()
-
-    paquete = {
-        "contenido": contenido,
-        "sha256": hash_paquete,
-        "firma_hmac": firma
-    }
-
-    # Evitar sobrescribir un envio anterior
-    with open(ruta_salida, "x", encoding="utf-8") as archivo:
-        json.dump(
-            paquete,
-            archivo,
-            indent=4,
-            ensure_ascii=False
-        )
-
-    print("Paquete CENTRAL generado correctamente.")
-    print("Archivo:", ruta_salida)
-    print("Productos:", len(productos))
-    print("Clientes:", len(clientes))
-    print("Secuencia:", contenido["secuencia"])
-    print("SHA-256:", hash_paquete)
 
 
 try:

@@ -1,4 +1,6 @@
 
+from control_secuencias import guardar_paquete
+
 import json
 import hashlib
 from datetime import datetime
@@ -46,12 +48,20 @@ def generar_paquete():
             print("Error: esta base no corresponde a SUC3")
             return
 
-        cursor.execute("""
+        cursor.execute(""" 
             SELECT id_cliente, cedula, nombre,
-                   telefono, nodo_origen
+                telefono, nodo_origen
             FROM clientes
-            WHERE sincronizado = 0
-              AND nodo_origen = 'SUC3'
+            WHERE nodo_origen = 'SUC3'
+            AND (
+                sincronizado = 0
+                OR id_cliente IN (
+                    SELECT id_cliente
+                    FROM facturas
+                    WHERE sincronizado = 0
+                        AND nodo_emisor = 'SUC3'
+                )
+            )
             ORDER BY id_cliente
         """)
 
@@ -109,53 +119,32 @@ def generar_paquete():
             print("No hay registros pendientes.")
             return
 
-        contenido = {
-            "id_paquete": "SUC3-0001",
+        
+    def construir_contenido(secuencia):
+        return {
+            "id_paquete": f"SUC3-{secuencia:04d}",
             "origen": "SUC3",
             "destino": "CENTRAL",
-            "secuencia": 1,
+            "secuencia": secuencia,
             "fecha_generacion": datetime.now().isoformat(),
             "clientes": clientes,
             "facturas": facturas,
             "detalles": detalles
         }
 
-        datos = json.dumps(
-            contenido,
-            sort_keys=True,
-            ensure_ascii=False,
-            separators=(",", ":")
-        ).encode("utf-8")
+    guardar_paquete(
+        origen="SUC3",
+        carpeta=Path(__file__).resolve().parent / "paquetes_oracle",
+        construir_contenido=construir_contenido
+    )
 
-        hash_paquete = hashlib.sha256(datos).hexdigest()
-
-        paquete = {
-            "contenido": contenido,
-            "sha256": hash_paquete
-        }
-
-        ruta = carpeta / "paquete_SUC3_0001.json"
-
-        with open(ruta, "x", encoding="utf-8") as archivo:
-            json.dump(
-                paquete,
-                archivo,
-                indent=4,
-                ensure_ascii=False
-            )
-
-        print("Paquete generado correctamente")
-        print("Archivo:", ruta)
-        print("Clientes:", len(clientes))
-        print("Facturas:", len(facturas))
-        print("Detalles:", len(detalles))
 
 
 try:
     generar_paquete()
 
 except FileExistsError:
-    print("El paquete SUC3-0001 ya existe.")
+    print("Ya existe un paquete con esa secuencia.")
     print("No fue sobrescrito.")
 
 except Exception as error:
